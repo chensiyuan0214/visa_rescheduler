@@ -36,16 +36,22 @@ PUSH_USER = config['PUSHOVER']['PUSH_USER']
 LOCAL_USE = config['CHROMEDRIVER'].getboolean('LOCAL_USE')
 HUB_ADDRESS = config['CHROMEDRIVER']['HUB_ADDRESS']
 
-REGEX_CONTINUE = "//a[contains(text(),'Continuar')]"
+REGEX_CONTINUE = "//a[contains(text(),'Continue')]"
 
 
 # def MY_CONDITION(month, day): return int(month) == 11 and int(day) >= 5
 def MY_CONDITION(month, day): return True # No custom condition wanted for the new scheduled date
 
+# STEP_TIME = 0.5  # time between steps (interactions with forms): 0.5 seconds
+# RETRY_TIME = 60*10  # wait time between retries/checks for available dates: 10 minutes
+# EXCEPTION_TIME = 60*30  # wait time when an exception occurs: 30 minutes
+# COOLDOWN_TIME = 60*60  # wait time when temporary banned (empty list): 60 minutes
+
+#TEST
 STEP_TIME = 0.5  # time between steps (interactions with forms): 0.5 seconds
-RETRY_TIME = 60*10  # wait time between retries/checks for available dates: 10 minutes
-EXCEPTION_TIME = 60*30  # wait time when an exception occurs: 30 minutes
-COOLDOWN_TIME = 60*60  # wait time when temporary banned (empty list): 60 minutes
+RETRY_TIME = 60  # wait time between retries/checks for available dates: 10 minutes
+EXCEPTION_TIME = 60  # wait time when an exception occurs: 30 minutes
+COOLDOWN_TIME = 60  # wait time when temporary banned (empty list): 60 minutes
 
 DATE_URL = f"https://ais.usvisa-info.com/{COUNTRY_CODE}/niv/schedule/{SCHEDULE_ID}/appointment/days/{FACILITY_ID}.json?appointments[expedite]=false"
 TIME_URL = f"https://ais.usvisa-info.com/{COUNTRY_CODE}/niv/schedule/{SCHEDULE_ID}/appointment/times/{FACILITY_ID}.json?date=%s&appointments[expedite]=false"
@@ -241,8 +247,8 @@ if __name__ == "__main__":
     login()
     retry_count = 0
     while 1:
-        if retry_count > 6:
-            break
+        # if retry_count > 6:
+        #     break
         try:
             print("------------------")
             print(datetime.today())
@@ -253,14 +259,16 @@ if __name__ == "__main__":
             if not dates:
               msg = "List is empty"
               send_notification(msg)
-              EXIT = True
+              # EXIT = True
+              EXIT=False
             print_dates(dates)
             date = get_available_date(dates)
             print()
             print(f"New date: {date}")
             if date:
-                reschedule(date)
-                push_notification(dates)
+                print(date)
+                # reschedule(date)
+                # push_notification(dates)
 
             if(EXIT):
                 print("------------------exit")
